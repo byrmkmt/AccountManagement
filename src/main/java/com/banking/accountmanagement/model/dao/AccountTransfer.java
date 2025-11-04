@@ -1,7 +1,12 @@
 package com.banking.accountmanagement.model.dao;
 
+import jakarta.persistence.*;
+import org.hibernate.annotations.CreationTimestamp;
+
 import java.util.Date;
 
+@Entity
+@Table(name = "account_tranfers")
 public class AccountTransfer {
     private Long id;
     private String toAccountNumber;
@@ -23,6 +28,9 @@ public class AccountTransfer {
         this.createdDate = createdDate;
     }
 
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "id")
     public Long getId() {
         return id;
     }
@@ -31,6 +39,7 @@ public class AccountTransfer {
         this.id = id;
     }
 
+    @Column(name = "account_number", nullable = false, unique = true)
     public String getToAccountNumber() {
         return toAccountNumber;
     }
@@ -39,6 +48,7 @@ public class AccountTransfer {
         this.toAccountNumber = toAccountNumber;
     }
 
+    @Column(name = "quantity", nullable = false)
     public Long getQuantity() {
         return quantity;
     }
@@ -47,6 +57,7 @@ public class AccountTransfer {
         this.quantity = quantity;
     }
 
+    @Column(name = "name", nullable = false)
     public String getFirstName() {
         return firstName;
     }
@@ -55,6 +66,7 @@ public class AccountTransfer {
         this.firstName = firstName;
     }
 
+    @Column(name="surname", nullable = false)
     public String getLastName() {
         return lastName;
     }
@@ -63,6 +75,7 @@ public class AccountTransfer {
         this.lastName = lastName;
     }
 
+    @Column(name = "message")
     public String getMessage() {
         return message;
     }
@@ -71,6 +84,9 @@ public class AccountTransfer {
         this.message = message;
     }
 
+    @CreationTimestamp
+    @Temporal(TemporalType.TIMESTAMP)
+    @Column(name = "created_date", nullable = false, updatable = false)
     public Date getCreatedDate() {
         return createdDate;
     }

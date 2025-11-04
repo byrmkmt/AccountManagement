@@ -1,12 +1,15 @@
 package com.banking.accountmanagement.model.dao;
 
 import com.banking.accountmanagement.model.AccountStatus;
-import com.banking.accountmanagement.model.dao.AccountTransfer;
+import jakarta.persistence.*;
 
+import java.io.Serializable;
 import java.util.Date;
 import java.util.List;
 
-public class BankAccount {
+@Entity
+@Table(name = "bank_accounts")
+public class BankAccount implements Serializable {
     private Long id;
     private String userId;
     private String accountNumber;
@@ -15,13 +18,13 @@ public class BankAccount {
     private Long balance;
     private AccountStatus status;
     private List<AccountTransfer> latestTransfers;
-    private Date lastLoginDate;
+    private Date lastLogin;
     private Date createdDate;
     private Date lastUpdatedDate;
 
     public BankAccount() {}
 
-    public BankAccount(Long id, String userId, String accountNumber, String firstName, String lastName, Long balance, AccountStatus status, List<AccountTransfer> latestTransfers, Date lastLoginDate, Date createdDate, Date lastUpdatedDate) {
+    public BankAccount(Long id, String userId, String accountNumber, String firstName, String lastName, Long balance, AccountStatus status, List<AccountTransfer> latestTransfers, Date lastLogin, Date createdDate, Date lastUpdatedDate) {
         this.id = id;
         this.userId = userId;
         this.accountNumber = accountNumber;
@@ -30,11 +33,14 @@ public class BankAccount {
         this.balance = balance;
         this.status = status;
         this.latestTransfers = latestTransfers;
-        this.lastLoginDate = lastLoginDate;
+        this.lastLogin = lastLogin;
         this.createdDate = createdDate;
         this.lastUpdatedDate = lastUpdatedDate;
     }
 
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "id")
     public Long getId() {
         return id;
     }
@@ -43,6 +49,7 @@ public class BankAccount {
         this.id = id;
     }
 
+    @Column(name="user_id", nullable = false, unique = true)
     public String getUserId() {
         return userId;
     }
@@ -51,6 +58,7 @@ public class BankAccount {
         this.userId = userId;
     }
 
+    @Column(name="account_number", nullable = false, unique = true)
     public String getAccountNumber() {
         return accountNumber;
     }
@@ -59,6 +67,7 @@ public class BankAccount {
         this.accountNumber = accountNumber;
     }
 
+    @Column(name = "name", nullable = false)
     public String getFirstName() {
         return firstName;
     }
@@ -67,6 +76,7 @@ public class BankAccount {
         this.firstName = firstName;
     }
 
+    @Column(name="surname", nullable = false)
     public String getLastName() {
         return lastName;
     }
@@ -75,6 +85,7 @@ public class BankAccount {
         this.lastName = lastName;
     }
 
+    @Column(name="balance", nullable = false)
     public Long getBalance() {
         return balance;
     }
@@ -83,6 +94,7 @@ public class BankAccount {
         this.balance = balance;
     }
 
+    @Column(name="status", nullable = false)
     public AccountStatus getStatus() {
         return status;
     }
@@ -91,6 +103,8 @@ public class BankAccount {
         this.status = status;
     }
 
+    @OneToMany(cascade = CascadeType.ALL)
+    @JoinColumn(name = "account_id", foreignKey = @ForeignKey(name = "fk_latest_transfers"))
     public List<AccountTransfer> getLatestTransfers() {
         return latestTransfers;
     }
@@ -99,14 +113,16 @@ public class BankAccount {
         this.latestTransfers = latestTransfers;
     }
 
-    public Date getLastLoginDate() {
-        return lastLoginDate;
+    @Column(name = "last_login")
+    public Date getLastLogin() {
+        return lastLogin;
     }
 
-    public void setLastLoginDate(Date lastLoginDate) {
-        this.lastLoginDate = lastLoginDate;
+    public void setLastLogin(Date lastLogin) {
+        this.lastLogin = lastLogin;
     }
 
+    @Column(name = "created_date", nullable = false, updatable = false)
     public Date getCreatedDate() {
         return createdDate;
     }
@@ -115,6 +131,7 @@ public class BankAccount {
         this.createdDate = createdDate;
     }
 
+    @Column(name = "last_update")
     public Date getLastUpdatedDate() {
         return lastUpdatedDate;
     }
