@@ -2,16 +2,15 @@ package com.banking.accountmanagement.service;
 
 import com.banking.accountmanagement.event.model.AccountCreatedEvent;
 import com.banking.accountmanagement.model.AccountStatus;
-import com.banking.accountmanagement.model.dao.AccountTransfer;
 import com.banking.accountmanagement.model.dao.BankAccount;
 import com.banking.accountmanagement.model.dto.AccountTransferDTO;
 import com.banking.accountmanagement.model.dto.BankAccountDTO;
 import com.banking.accountmanagement.repository.AccountManagementRepository;
+import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.Date;
-import java.util.List;
+import java.util.Optional;
 
 @Service
 public class AccountManagementService {
@@ -35,8 +34,12 @@ public class AccountManagementService {
         accountManagementRepository.save(bankAccount);
     }
 
-    public BankAccountDTO getAccountInformation(Long id) {
-        accountManagementRepository.findById(id);
+    public BankAccountDTO getAccountInformation(String userId) {
+        BankAccount account = accountManagementRepository.findByUserId(userId);
+        if(account != null){
+            ModelMapper modelMapper = new ModelMapper();
+            return modelMapper.map(account, BankAccountDTO.class);
+        }
         return null;
     }
 

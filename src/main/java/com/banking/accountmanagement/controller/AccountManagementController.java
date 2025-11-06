@@ -21,9 +21,9 @@ public class AccountManagementController {
     }
 
     /*  Account information and latest account transfers will be shown   */
-    @GetMapping("/{id}")
-    public ResponseEntity<BankAccountDTO> getAccountInformation(@PathVariable Long id) {
-        return new ResponseEntity<>(AccountManagementService.getAccountInformation(id), HttpStatus.OK);
+    @PostMapping("/profile")
+    public ResponseEntity<BankAccountDTO> getAccountInformation(@RequestBody String userId) {
+        return new ResponseEntity<>(AccountManagementService.getAccountInformation(userId), HttpStatus.OK);
     }
 
     /*  Money transfer to an account which either can be from latest account transfers or not. */

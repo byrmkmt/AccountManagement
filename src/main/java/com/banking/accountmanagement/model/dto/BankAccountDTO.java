@@ -13,7 +13,7 @@ public class BankAccountDTO implements Serializable {
     private Long balance;
     private AccountStatus status;
     private List<AccountTransferDTO> latestTransfers;
-    private Date lastLoginDate;
+    private Date lastLogin;
 
     public BankAccountDTO() {
 
@@ -86,11 +86,11 @@ public class BankAccountDTO implements Serializable {
     }
 
     public Date getLastLoginDate() {
-        return lastLoginDate;
+        return lastLogin;
     }
 
-    public void setLastLoginDate(Date lastLoginDate) {
-        this.lastLoginDate = lastLoginDate;
+    public void setLastLoginDate(Date lastLogin) {
+        this.lastLogin = lastLogin;
     }
 
 }
