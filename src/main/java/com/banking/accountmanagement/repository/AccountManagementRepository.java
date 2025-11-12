@@ -7,4 +7,7 @@ public interface AccountManagementRepository extends JpaRepository<BankAccount, 
 
     public BankAccount findByUserId(String userId);
 
+    public BankAccount findByAccountNumber(String accountNumber);
+
+
 }

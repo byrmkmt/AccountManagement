@@ -98,6 +98,7 @@ public class BankAccount implements Serializable {
         this.balance = balance;
     }
 
+    @Enumerated(EnumType.STRING)
     @Column(name="status", nullable = false)
     public AccountStatus getStatus() {
         return status;
@@ -107,8 +108,8 @@ public class BankAccount implements Serializable {
         this.status = status;
     }
 
-    @OneToMany(cascade = CascadeType.ALL)
-    @JoinColumn(name = "account_id", foreignKey = @ForeignKey(name = "fk_latest_transfers"))
+    @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
+    @JoinColumn(name = "account_id")
     public List<AccountTransfer> getLatestTransfers() {
         return latestTransfers;
     }

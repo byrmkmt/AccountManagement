@@ -1,5 +1,6 @@
 package com.banking.accountmanagement.model.dao;
 
+import com.fasterxml.jackson.databind.deser.std.StringArrayDeserializer;
 import jakarta.persistence.*;
 import org.hibernate.annotations.CreationTimestamp;
 
@@ -9,7 +10,8 @@ import java.util.Date;
 @Table(name = "account_tranfers")
 public class AccountTransfer {
     private Long id;
-    private String toAccountNumber;
+    private BankAccount fromAccount;
+    private String  accountNumber;
     private Long quantity;
     private String firstName;
     private String lastName;
@@ -18,9 +20,10 @@ public class AccountTransfer {
 
     public AccountTransfer() {}
 
-    public AccountTransfer(Long id, String toAccountNumber, Long quantity, String firstName, String lastName, String message, Date createdDate) {
+    public AccountTransfer(Long id, BankAccount fromAccount, String accountNumber, Long quantity, String firstName, String lastName, String message, Date createdDate) {
         this.id = id;
-        this.toAccountNumber = toAccountNumber;
+        this.fromAccount = fromAccount;
+        this.accountNumber = accountNumber;
         this.quantity = quantity;
         this.firstName = firstName;
         this.lastName = lastName;
@@ -39,13 +42,23 @@ public class AccountTransfer {
         this.id = id;
     }
 
-    @Column(name = "account_number", nullable = false, unique = true)
-    public String getToAccountNumber() {
-        return toAccountNumber;
+    @ManyToOne
+    @JoinColumn(name = "account_id", insertable = false, updatable = false)
+    public BankAccount getFromAccount() {
+        return fromAccount;
     }
 
-    public void setToAccountNumber(String toAccountNumber) {
-        this.toAccountNumber = toAccountNumber;
+    public void setFromAccount(BankAccount fromAccount) {
+        this.fromAccount= fromAccount;
+    }
+
+    @Column(name = "account_number", nullable = false)
+    public String getAccountNumber() {
+        return accountNumber;
+    }
+
+    public void setAccountNumber(String accountNumber) {
+        this.accountNumber = accountNumber;
     }
 
     @Column(name = "quantity", nullable = false)

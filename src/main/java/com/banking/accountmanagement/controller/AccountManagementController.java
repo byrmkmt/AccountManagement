@@ -1,5 +1,6 @@
 package com.banking.accountmanagement.controller;
 
+import com.banking.accountmanagement.model.dao.AccountTransfer;
 import com.banking.accountmanagement.model.dto.AccountTransferDTO;
 import com.banking.accountmanagement.model.dto.BankAccountDTO;
 import com.banking.accountmanagement.service.AccountManagementService;
@@ -7,6 +8,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RestController
 @RequestMapping("/account")
@@ -27,12 +30,18 @@ public class AccountManagementController {
     }
 
     /*  Money transfer to an account which either can be from latest account transfers or not. */
-    @PostMapping("/transfer/{id}")
-    public ResponseEntity<AccountTransferDTO> makeMoneyTransfer(@PathVariable Long id, AccountTransferDTO to) {
-        return new ResponseEntity<>(AccountManagementService.makeMoneyTransfer(id,to), HttpStatus.OK);
+    @PostMapping("/transfer/{userId}")
+    public ResponseEntity<AccountTransferDTO> makeMoneyTransfer(@PathVariable String  userId, @RequestBody AccountTransferDTO to) {
+        return new ResponseEntity<>(AccountManagementService.makeMoneyTransfer(userId,to), HttpStatus.OK);
     }
 
-    /*  to deactivate or close account  */
+    /*  To get recently money transfer list */
+     @GetMapping("/recentlyTransferList/{userId}")
+     public ResponseEntity<List<AccountTransferDTO>> transferList(@PathVariable String  userId) {
+         return new ResponseEntity<>(AccountManagementService.transferList(userId), HttpStatus.OK);
+     }
+
+    /*  To deactivate or close account  */
     @PatchMapping("/change_status/{id}")
     public ResponseEntity<Object> changeStatusAccount(@PathVariable Long id, @RequestParam("status")  String status) {
         return new ResponseEntity<>(AccountManagementService.changeStatusAccount(id,status), HttpStatus.OK);
