@@ -10,6 +10,8 @@ import com.banking.accountmanagement.model.dto.BankAccountDTO;
 import com.banking.accountmanagement.repository.AccountManagementRepository;
 import jakarta.transaction.Transactional;
 import org.modelmapper.ModelMapper;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.*;
 
@@ -39,6 +41,7 @@ public class AccountManagementService {
         accountManagementRepository.save(bankAccount);
     }
 
+    @Cacheable(value = "accountProfile", key = "#userId")
     public BankAccountDTO getAccountInformation(String userId) {
         BankAccount account = accountManagementRepository.findByUserId(userId);
         if(account != null){
@@ -49,6 +52,7 @@ public class AccountManagementService {
     }
 
     @Transactional
+    @CacheEvict(value = {"accountProfile", "transferList"}, key = "#userId")
     public AccountTransferDTO makeMoneyTransfer(String userId, AccountTransferDTO to) {
         BankAccount source = accountManagementRepository.findByUserId(userId);
         if(source == null){
@@ -73,6 +77,7 @@ public class AccountManagementService {
         return to;
     }
 
+    @Cacheable(value = "transferList", key = "#userId")
     public List<AccountTransferDTO> transferList(String userId) {
         BankAccount account = accountManagementRepository.findByUserId(userId);
         if(account == null){

@@ -1,8 +1,9 @@
 package com.banking.accountmanagement.model.dto;
 
+import java.io.Serializable;
 import java.util.Date;
 
-public class AccountTransferDTO {
+public class AccountTransferDTO implements Serializable {
     private Long id;
     private String toAccountNumber;
     private Long quantity;
