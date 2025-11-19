@@ -1,6 +1,5 @@
 package com.banking.accountmanagement.controller;
 
-import com.banking.accountmanagement.model.dao.AccountTransfer;
 import com.banking.accountmanagement.model.dto.AccountTransferDTO;
 import com.banking.accountmanagement.model.dto.BankAccountDTO;
 import com.banking.accountmanagement.service.AccountManagementService;

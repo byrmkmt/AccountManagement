@@ -1,7 +1,7 @@
-package com.banking.accountmanagement.exception;
+package com.banking.accountmanagement.handler;
 
+import com.banking.accountmanagement.exception.MoneyTransferFailedException;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 

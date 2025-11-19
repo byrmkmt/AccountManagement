@@ -1,6 +1,7 @@
 package com.banking.accountmanagement.service;
 
 import com.banking.accountmanagement.event.model.AccountCreatedEvent;
+import com.banking.accountmanagement.exception.AccountNotFoundException;
 import com.banking.accountmanagement.exception.MoneyTransferFailedException;
 import com.banking.accountmanagement.model.AccountStatus;
 import com.banking.accountmanagement.model.dao.AccountTransfer;
@@ -15,16 +16,19 @@ import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.*;
 
-import javax.security.auth.login.AccountNotFoundException;
+import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
 @Service
 public class AccountManagementService {
 
+    private final ModelMapper modelMapper;
+
     private final AccountManagementRepository accountManagementRepository;
 
-    public AccountManagementService(AccountManagementRepository accountManagementRepository) {
+    public AccountManagementService(ModelMapper modelMapper, AccountManagementRepository accountManagementRepository) {
+        this.modelMapper = modelMapper;
         this.accountManagementRepository = accountManagementRepository;
     }
 
@@ -44,11 +48,10 @@ public class AccountManagementService {
     @Cacheable(value = "accountProfile", key = "#userId")
     public BankAccountDTO getAccountInformation(String userId) {
         BankAccount account = accountManagementRepository.findByUserId(userId);
-        if(account != null){
-            ModelMapper modelMapper = new ModelMapper();
-            return modelMapper.map(account, BankAccountDTO.class);
+        if(account == null){
+            throw new AccountNotFoundException("Hesap bulunamadı: " + userId);
         }
-        return null;
+        return modelMapper.map(account, BankAccountDTO.class);
     }
 
     @Transactional
@@ -56,14 +59,13 @@ public class AccountManagementService {
     public AccountTransferDTO makeMoneyTransfer(String userId, AccountTransferDTO to) {
         BankAccount source = accountManagementRepository.findByUserId(userId);
         if(source == null){
-            throw new RuntimeException("Hesabınızda erişim sorunu oluştu.");
+            throw new MoneyTransferFailedException("Hesabınızda erişim sorunu oluştu.");
         }
         BankAccount target = accountManagementRepository.findByAccountNumber(to.getToAccountNumber());
         if(target == null){
             throw new MoneyTransferFailedException("Müşteri numarası geçersiz!");
         }
         if(source.getBalance() >= to.getQuantity()){
-            ModelMapper modelMapper = new ModelMapper();
             AccountTransfer transfer = modelMapper.map(to, AccountTransfer.class);
             transfer.setFromAccount(source);
 
@@ -81,21 +83,11 @@ public class AccountManagementService {
     public List<AccountTransferDTO> transferList(String userId) {
         BankAccount account = accountManagementRepository.findByUserId(userId);
         if(account == null){
-            return null;
+            return Collections.emptyList();
         }
         return account.getLatestTransfers()
                 .stream()
-                .map(transfer -> {
-                    AccountTransferDTO dto = new AccountTransferDTO();
-                    dto.setId(transfer.getId());
-                    dto.setToAccountNumber(transfer.getAccountNumber());
-                    dto.setFirstName(transfer.getFirstName());
-                    dto.setLastName(transfer.getLastName());
-                    dto.setQuantity(transfer.getQuantity());
-                    dto.setMessage(transfer.getMessage());
-                    dto.setCreatedDate(transfer.getCreatedDate());
-                    return dto;
-                })
+                .map(transfer -> modelMapper.map(transfer, AccountTransferDTO.class))
                 .collect(Collectors.toList());
     }
 
