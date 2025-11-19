@@ -6,11 +6,4 @@ public class AccountNotFoundException extends RuntimeException {
         super(message);
     }
 
-    public AccountNotFoundException(String message, Throwable cause) {
-        super(message, cause);
-    }
-
-    public AccountNotFoundException(Throwable cause) {
-        super(cause);
-    }
 }

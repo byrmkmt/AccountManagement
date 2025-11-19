@@ -1,4 +1,4 @@
-package com.banking.accountmanagement.utility;
+package com.banking.accountmanagement.configuration;
 
 import org.modelmapper.Conditions;
 import org.modelmapper.ModelMapper;
@@ -6,7 +6,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
 @Configuration
-public class ModelMapperUtility {
+public class ModelMapperConfig {
 
     @Bean
     public ModelMapper modelMapper() {
