@@ -1,9 +1,13 @@
 package com.banking.accountmanagement.exception;
 
-public class AccountNotFoundException extends RuntimeException {
+public class AccountNotFoundException extends BaseErrorException {
 
-    public AccountNotFoundException(String message) {
-        super(message);
+    private AccountNotFoundException(ErrorCodes code, String message) {
+        super(code, message);
+    }
+
+    public static AccountNotFoundException of(ErrorCodes code, Object... args) {
+        return new AccountNotFoundException(code, formatMessage(code, args));
     }
 
 }

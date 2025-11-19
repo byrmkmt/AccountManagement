@@ -2,6 +2,7 @@ package com.banking.accountmanagement.service;
 
 import com.banking.accountmanagement.event.model.AccountCreatedEvent;
 import com.banking.accountmanagement.exception.AccountNotFoundException;
+import com.banking.accountmanagement.exception.ErrorCodes;
 import com.banking.accountmanagement.exception.MoneyTransferFailedException;
 import com.banking.accountmanagement.model.AccountStatus;
 import com.banking.accountmanagement.model.dao.AccountTransfer;
@@ -9,6 +10,7 @@ import com.banking.accountmanagement.model.dao.BankAccount;
 import com.banking.accountmanagement.model.dto.AccountTransferDTO;
 import com.banking.accountmanagement.model.dto.BankAccountDTO;
 import com.banking.accountmanagement.repository.AccountManagementRepository;
+import com.banking.accountmanagement.utility.MessageUtil;
 import jakarta.transaction.Transactional;
 import org.modelmapper.ModelMapper;
 import org.springframework.cache.annotation.CacheEvict;
@@ -16,12 +18,12 @@ import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
 @Service
 public class AccountManagementService {
+
 
     private final ModelMapper modelMapper;
 
@@ -49,7 +51,7 @@ public class AccountManagementService {
     public BankAccountDTO getAccountInformation(String userId) {
         BankAccount account = accountManagementRepository.findByUserId(userId);
         if(account == null){
-            throw new AccountNotFoundException("Hesap bulunamadı: " + userId);
+            throw AccountNotFoundException.of(ErrorCodes.ACCOUNT_NOT_FOUND);
         }
         return modelMapper.map(account, BankAccountDTO.class);
     }
@@ -59,22 +61,25 @@ public class AccountManagementService {
     public AccountTransferDTO makeMoneyTransfer(String userId, AccountTransferDTO to) {
         BankAccount source = accountManagementRepository.findByUserId(userId);
         if(source == null){
-            throw new MoneyTransferFailedException("Hesabınızda erişim sorunu oluştu.");
+            throw MoneyTransferFailedException.of(ErrorCodes.ACCOUNT_ACCESS_FAILED);
         }
         BankAccount target = accountManagementRepository.findByAccountNumber(to.getToAccountNumber());
         if(target == null){
-            throw new MoneyTransferFailedException("Müşteri numarası geçersiz!");
+            throw MoneyTransferFailedException.of(ErrorCodes.INVALID_ACCOUNT_NUMBER, userId);
         }
-        if(source.getBalance() >= to.getQuantity()){
+        Long sourceBalance = source.getBalance();
+        Long quantity = to.getQuantity();
+        if(sourceBalance >= quantity){
             AccountTransfer transfer = modelMapper.map(to, AccountTransfer.class);
             transfer.setFromAccount(source);
+            Long targetBalance = target.getBalance();
 
-            source.setBalance(source.getBalance() - to.getQuantity());
-            target.setBalance(target.getBalance() + to.getQuantity());
+            source.setBalance(sourceBalance - quantity);
+            target.setBalance(targetBalance + quantity);
 
             source.getLatestTransfers().add(transfer);
         } else{
-            throw new MoneyTransferFailedException("Yetersiz bakiye limiti!");
+            throw MoneyTransferFailedException.of(ErrorCodes.TRANSFER_FAILED);
         }
         return to;
     }
@@ -83,7 +88,7 @@ public class AccountManagementService {
     public List<AccountTransferDTO> transferList(String userId) {
         BankAccount account = accountManagementRepository.findByUserId(userId);
         if(account == null){
-            return Collections.emptyList();
+            return List.of();
         }
         return account.getLatestTransfers()
                 .stream()
