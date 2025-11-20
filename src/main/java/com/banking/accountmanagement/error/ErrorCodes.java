@@ -1,4 +1,4 @@
-package com.banking.accountmanagement.exception;
+package com.banking.accountmanagement.error;
 
 public enum ErrorCodes {
 

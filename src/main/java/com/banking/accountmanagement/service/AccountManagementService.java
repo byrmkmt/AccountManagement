@@ -1,16 +1,15 @@
 package com.banking.accountmanagement.service;
 
 import com.banking.accountmanagement.event.model.AccountCreatedEvent;
-import com.banking.accountmanagement.exception.AccountNotFoundException;
-import com.banking.accountmanagement.exception.ErrorCodes;
-import com.banking.accountmanagement.exception.MoneyTransferFailedException;
+import com.banking.accountmanagement.error.exceptions.AccountNotFoundException;
+import com.banking.accountmanagement.error.ErrorCodes;
+import com.banking.accountmanagement.error.exceptions.MoneyTransferFailedException;
 import com.banking.accountmanagement.model.AccountStatus;
 import com.banking.accountmanagement.model.dao.AccountTransfer;
 import com.banking.accountmanagement.model.dao.BankAccount;
 import com.banking.accountmanagement.model.dto.AccountTransferDTO;
 import com.banking.accountmanagement.model.dto.BankAccountDTO;
 import com.banking.accountmanagement.repository.AccountManagementRepository;
-import com.banking.accountmanagement.utility.MessageUtil;
 import jakarta.transaction.Transactional;
 import org.modelmapper.ModelMapper;
 import org.springframework.cache.annotation.CacheEvict;

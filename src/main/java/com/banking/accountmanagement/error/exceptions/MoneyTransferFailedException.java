@@ -1,6 +1,8 @@
-package com.banking.accountmanagement.exception;
+package com.banking.accountmanagement.error.exceptions;
 
-public class MoneyTransferFailedException extends BaseErrorException {
+import com.banking.accountmanagement.error.ErrorCodes;
+
+public class MoneyTransferFailedException extends BaseException {
 
     private MoneyTransferFailedException(ErrorCodes code, String message) {
         super(code, message);

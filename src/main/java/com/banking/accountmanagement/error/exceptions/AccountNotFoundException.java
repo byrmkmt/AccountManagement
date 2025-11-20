@@ -1,6 +1,8 @@
-package com.banking.accountmanagement.exception;
+package com.banking.accountmanagement.error.exceptions;
 
-public class AccountNotFoundException extends BaseErrorException {
+import com.banking.accountmanagement.error.ErrorCodes;
+
+public class AccountNotFoundException extends BaseException {
 
     private AccountNotFoundException(ErrorCodes code, String message) {
         super(code, message);

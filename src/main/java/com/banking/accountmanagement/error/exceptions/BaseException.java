@@ -1,11 +1,12 @@
-package com.banking.accountmanagement.exception;
+package com.banking.accountmanagement.error.exceptions;
 
+import com.banking.accountmanagement.error.ErrorCodes;
 import com.banking.accountmanagement.utility.MessageUtil;
 
-public abstract class BaseErrorException extends RuntimeException {
+public abstract class BaseException extends RuntimeException {
     private final ErrorCodes code;
 
-    protected BaseErrorException(ErrorCodes code, String message) {
+    protected BaseException(ErrorCodes code, String message) {
         super(message);
         this.code = code;
     }
